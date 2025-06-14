@@ -1,6 +1,7 @@
 import { Modal } from "antd";
 import { observer } from "mobx-react-lite";
 import { useUserFormModalStore } from "../providers/user-form-modal-store-provider";
+import UserForm from "./user-form";
 
 const UserFormModal = observer(() => {
   const userFormModalStore = useUserFormModalStore();
@@ -15,14 +16,28 @@ const UserFormModal = observer(() => {
 
   return (
     <Modal
+      styles={{
+        content: {
+          padding: 0,
+        },
+        header: {
+          fontSize: 14,
+          lineHeight: 22,
+          padding: "12px 16px",
+          margin: 0,
+        },
+        body: {
+          padding: "10px 24px 20px",
+        },
+      }}
       title="회원 추가"
       open={userFormModalStore.isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
-      okText="추가"
-      cancelText="취소"
+      footer={null}
+      destroyOnHidden // modal이 닫힐 때 UserForm 컴포넌트 unmount 하기 위함
     >
-      <p>회원 추가 삭제 폼</p>
+      <UserForm />
     </Modal>
   );
 });

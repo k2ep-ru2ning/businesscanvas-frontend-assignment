@@ -13,6 +13,10 @@ const AntdConfigProvider = ({ children }: PropsWithChildren) => {
             titleMarginTop: 0,
             titleMarginBottom: 0,
           },
+          Form: {
+            labelColor: "#00000073",
+            itemMarginBottom: 20,
+          },
         },
       }}
     >
