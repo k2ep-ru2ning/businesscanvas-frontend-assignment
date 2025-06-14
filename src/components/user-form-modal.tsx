@@ -26,9 +26,6 @@ const UserFormModal = observer(() => {
           padding: "12px 16px",
           margin: 0,
         },
-        body: {
-          padding: "10px 24px 20px",
-        },
       }}
       title="회원 추가"
       open={userFormModalStore.isOpen}
