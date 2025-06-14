@@ -1,6 +1,6 @@
-import { Button, Checkbox, Table, type TableColumnsType } from "antd";
+import { Checkbox, Table, type TableColumnsType } from "antd";
 import UserTableFilterDropdown from "./user-table-filter-dropdown";
-import { MoreOutlined } from "@ant-design/icons";
+import UserTableRecordEditDropdown from "./user-table-record-edit-dropdown";
 
 type User = {
   id: string;
@@ -128,9 +128,9 @@ const columns: TableColumnsType<User> = [
   },
   {
     title: "",
-    key: "action",
+    key: "recordEdit",
     width: 38,
-    render: () => <Button type="text" icon={<MoreOutlined />}></Button>,
+    render: () => <UserTableRecordEditDropdown />,
   },
 ];
 
