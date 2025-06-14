@@ -1,65 +1,14 @@
 import { Button, Checkbox, DatePicker, Flex, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
+import { observer } from "mobx-react-lite";
+import { useUserTableStore } from "../providers/user-table-store-provider";
 
-type Field =
-  | {
-      type: "text" | "textarea" | "date" | "checkbox";
-      label: string;
-      name: string;
-      required: boolean;
-    }
-  | {
-      type: "select";
-      label: string;
-      name: string;
-      required: boolean;
-      options: string[];
-    };
+const UserForm = observer(() => {
+  const userTableStore = useUserTableStore();
 
-const fields: Field[] = [
-  {
-    type: "text",
-    label: "이름",
-    name: "name",
-    required: true,
-  },
-  {
-    type: "text",
-    label: "주소",
-    name: "address",
-    required: false,
-  },
-  {
-    type: "textarea",
-    label: "메모",
-    name: "memo",
-    required: false,
-  },
-  {
-    type: "date",
-    label: "가입일",
-    name: "joinedAt",
-    required: true,
-  },
-  {
-    type: "select",
-    label: "직업",
-    name: "job",
-    required: false,
-    options: ["개발자", "PO", "디자이너"],
-  },
-  {
-    type: "checkbox",
-    label: "이메일 수신 동의",
-    name: "isEmailSubscribed",
-    required: false,
-  },
-];
-
-const UserForm = () => {
   // field 타입에 맞게 초기값 계산
   const initialValues = Object.fromEntries(
-    fields.map((field) => {
+    userTableStore.fields.map((field) => {
       const key = field.name;
       const value = field.type === "checkbox" ? false : "";
       return [key, value];
@@ -86,7 +35,7 @@ const UserForm = () => {
     >
       <div style={{ padding: "10px 24px 20px" }}>
         {/* field 타입에 맞는 input을 rendering */}
-        {fields.map((field) => {
+        {userTableStore.fields.map((field) => {
           if (field.type === "text") {
             return (
               <Form.Item
@@ -211,6 +160,6 @@ const UserForm = () => {
       </Flex>
     </Form>
   );
-};
+});
 
 export default UserForm;

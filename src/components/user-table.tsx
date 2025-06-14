@@ -1,150 +1,72 @@
 import { Checkbox, Table, type TableColumnsType } from "antd";
 import UserTableFilterDropdown from "./user-table-filter-dropdown";
 import UserTableRecordEditDropdown from "./user-table-record-edit-dropdown";
+import { observer } from "mobx-react-lite";
+import type { UserTableRecord } from "../stores/user-table-store";
+import { useUserTableStore } from "../providers/user-table-store-provider";
+import type { ColumnType } from "antd/es/table";
 
-type User = {
-  id: string;
-  name: string;
-  address: string;
-  memo: string;
-  joinedAt: string;
-  job: string;
-  isEmailSubscribed: boolean;
-};
+const UserTable = observer(() => {
+  const userTableStore = useUserTableStore();
 
-const data: User[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    address: "서울 강남구",
-    memo: "외국인",
-    joinedAt: "2024-10-02",
-    job: "개발자",
-    isEmailSubscribed: true,
-  },
-  {
-    id: "2",
-    name: "Foo Bar",
-    address: "서울 서초구",
-    memo: "한국인",
-    joinedAt: "2024-10-01",
-    job: "PO",
-    isEmailSubscribed: false,
-  },
-  // {
-  //   id: "3",
-  //   name: "Third",
-  //   address: "서울 성동구",
-  //   memo: "한국인",
-  //   joinedAt: "2024-10-05",
-  //   job: "디자이너",
-  //   isEmailSubscribed: false,
-  // },
-];
+  const columns: TableColumnsType<UserTableRecord> = [
+    ...userTableStore.fields.map((field) => {
+      const column: ColumnType<UserTableRecord> = {
+        title: field.label,
+        dataIndex: field.name,
+        onFilter: (value, record) => record[field.name] === value,
+        filters: userTableStore
+          .getFilterValuesOfField(field.name)
+          .map((value) =>
+            field.type === "checkbox"
+              ? {
+                  value,
+                  text: value ? "선택됨" : "선택 안함",
+                }
+              : {
+                  value,
+                  text: value,
+                },
+          ),
+        filterDropdown: (props) => {
+          return <UserTableFilterDropdown {...props} />;
+        },
+      };
 
-const columns: TableColumnsType<User> = [
-  {
-    title: "이름",
-    dataIndex: "name",
-    width: 120,
-    onFilter: (value, record) => record.name === value,
-    filters: [...new Set(data.map((user) => user.name))].map((name) => ({
-      value: name,
-      text: name,
-    })),
-    filterDropdown: (props) => {
-      return <UserTableFilterDropdown {...props} />;
-    },
-  },
-  {
-    title: "주소",
-    dataIndex: "address",
-    width: 249,
-    onFilter: (value, record) => record.address === value,
-    filters: [...new Set(data.map((user) => user.address))].map((address) => ({
-      value: address,
-      text: address,
-    })),
-    filterDropdown: (props) => {
-      return <UserTableFilterDropdown {...props} />;
-    },
-  },
-  {
-    title: "메모",
-    dataIndex: "memo",
-    width: 249,
-    onFilter: (value, record) => record.memo === value,
-    filters: [...new Set(data.map((user) => user.memo))].map((memo) => ({
-      value: memo,
-      text: memo,
-    })),
-    filterDropdown: (props) => {
-      return <UserTableFilterDropdown {...props} />;
-    },
-  },
-  {
-    title: "가입일",
-    dataIndex: "joinedAt",
-    width: 200,
-    onFilter: (value, record) => record.joinedAt === value,
-    filters: [...new Set(data.map((user) => user.joinedAt))].map(
-      (joinedAt) => ({
-        value: joinedAt,
-        text: joinedAt,
-      }),
-    ),
-    filterDropdown: (props) => {
-      return <UserTableFilterDropdown {...props} />;
-    },
-  },
-  {
-    title: "직업",
-    dataIndex: "job",
-    width: 249,
-    onFilter: (value, record) => record.job === value,
-    filters: [...new Set(data.map((user) => user.job))].map((job) => ({
-      value: job,
-      text: job,
-    })),
-    filterDropdown: (props) => {
-      return <UserTableFilterDropdown {...props} />;
-    },
-  },
-  {
-    title: "이메일 수신 동의",
-    dataIndex: "isEmailSubscribed",
-    width: 150,
-    render: (value) => <Checkbox checked={value} />,
-    onFilter: (value, record) => record.isEmailSubscribed === value,
-    filters: [...new Set(data.map((user) => user.isEmailSubscribed))].map(
-      (isEmailSubscribed) => ({
-        value: isEmailSubscribed,
-        text: isEmailSubscribed ? "선택됨" : "선택 안함",
-      }),
-    ),
-    filterDropdown: (props) => {
-      return <UserTableFilterDropdown {...props} />;
-    },
-  },
-  {
-    title: "",
-    key: "recordEdit",
-    width: 38,
-    render: () => <UserTableRecordEditDropdown />,
-  },
-];
+      if (field.type === "checkbox") {
+        column["render"] = (value) => <Checkbox checked={value} />;
+      }
 
-const UserTable = () => {
+      if (["address", "memo", "job"].includes(field.name)) {
+        column["width"] = 249;
+      } else if (field.name === "name") {
+        column["width"] = 120;
+      } else if (field.name === "joinedAt") {
+        column["width"] = 200;
+      } else if (field.name === "isEmailSubscribed") {
+        column["width"] = 150;
+      }
+
+      return column;
+    }),
+    {
+      title: "",
+      key: "recordEdit",
+      width: 38,
+      render: () => <UserTableRecordEditDropdown />,
+    },
+  ];
+
   return (
-    <Table<User>
+    <Table<UserTableRecord>
       rowSelection={{}}
       rowKey={(record) => record.id}
       size="middle"
       columns={columns}
-      dataSource={data}
+      dataSource={userTableStore.records}
       pagination={false}
     />
   );
-};
+});
 
 export default UserTable;
