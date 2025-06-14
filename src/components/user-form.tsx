@@ -198,10 +198,8 @@ const UserForm = () => {
           );
         } else {
           // exhaustiveness checking
-
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const _neverFieldType: never = field.type;
-          throw new Error("unexpected field.type");
+          throw new Error(`unexpected field.type: ${_neverFieldType}`);
         }
       })}
       <Button type="primary" htmlType="submit">
