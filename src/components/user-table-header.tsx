@@ -1,4 +1,3 @@
-import style from "./user-table-header.module.css";
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Flex, Typography } from "antd";
 import { observer } from "mobx-react-lite";
@@ -15,7 +14,10 @@ const UserTableHeader = observer(() => {
     <Flex
       justify="space-between"
       align="center"
-      className={style.userTableHeader}
+      style={{
+        height: 48,
+        padding: "0 14px",
+      }}
     >
       <Typography.Title level={5}>회원 목록</Typography.Title>
       <Button

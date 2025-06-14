@@ -1,4 +1,3 @@
-import style from "./user-table-record-edit-dropdown.module.css";
 import { MoreOutlined } from "@ant-design/icons";
 import { Button, Dropdown, type MenuProps } from "antd";
 import { observer } from "mobx-react-lite";
@@ -35,7 +34,9 @@ const UserTableRecordEditDropdown = observer(() => {
       menu={{
         items,
         onClick: handleClick,
-        className: style.userTableRecordEditDropdown,
+        style: {
+          width: 185,
+        },
       }}
       trigger={["click"]}
     >
