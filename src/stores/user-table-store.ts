@@ -1,6 +1,8 @@
-import { makeAutoObservable } from "mobx";
+import { autorun, makeAutoObservable, toJS } from "mobx";
 import { nanoid } from "nanoid";
 import type { UserTableField, UserTableRecord } from "../types/user-table";
+import config from "../utils/config";
+import { loadUserRecords, saveUserRecords } from "../utils/user-storage";
 
 const initialRecords: UserTableRecord[] = [
   {
@@ -68,9 +70,22 @@ export default class UserTableStore {
   private _fields: UserTableField[];
 
   constructor() {
-    this._records = initialRecords;
     this._fields = initialFields;
+    if (config.storage === "local-storage") {
+      const savedRecords = loadUserRecords();
+      // local-storage 모드라도, local-storage가 비어있다면, 더미 데이터로 채워준다.
+      this._records = savedRecords.length > 0 ? savedRecords : initialRecords;
+    } else {
+      this._records = initialRecords;
+    }
+
     makeAutoObservable(this);
+
+    if (config.storage === "local-storage") {
+      autorun(() => {
+        saveUserRecords(toJS(this.records));
+      });
+    }
   }
 
   get records() {
