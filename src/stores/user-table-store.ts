@@ -111,4 +111,8 @@ export default class UserTableStore {
   addRecord(record: Omit<UserTableRecord, "id">) {
     this._records.push({ id: nanoid(), ...record });
   }
+
+  deleteRecord(id: UserTableRecord["id"]) {
+    this._records = this._records.filter((record) => record.id !== id);
+  }
 }

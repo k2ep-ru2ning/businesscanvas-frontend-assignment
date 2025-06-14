@@ -53,7 +53,9 @@ const UserTable = observer(() => {
       title: "",
       key: "recordEdit",
       width: 38,
-      render: () => <UserTableRecordEditDropdown />,
+      render: (_, record) => (
+        <UserTableRecordEditDropdown userTableRecord={record} />
+      ),
     },
   ];
 
