@@ -1,9 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { nanoid } from "nanoid";
-
-type UserTableCell = string | boolean;
-
-export type UserTableRecord = { id: string } & Record<string, UserTableCell>;
+import type { UserTableField, UserTableRecord } from "../types/user-table";
 
 const initialRecords: UserTableRecord[] = [
   {
@@ -26,22 +23,7 @@ const initialRecords: UserTableRecord[] = [
   },
 ];
 
-export type UserTableField =
-  | {
-      type: "text" | "textarea" | "date" | "checkbox";
-      label: string;
-      name: string;
-      required: boolean;
-    }
-  | {
-      type: "select";
-      label: string;
-      name: string;
-      required: boolean;
-      options: string[];
-    };
-
-export const initialFields: UserTableField[] = [
+const initialFields: UserTableField[] = [
   {
     type: "text",
     label: "이름",
@@ -108,8 +90,14 @@ export default class UserTableStore {
     );
   }
 
-  addRecord(record: Omit<UserTableRecord, "id">) {
-    this._records.push({ id: nanoid(), ...record });
+  addRecord(data: Omit<UserTableRecord, "id">) {
+    this._records.push({ id: nanoid(), ...data });
+  }
+
+  editRecord(id: UserTableRecord["id"], data: Omit<UserTableRecord, "id">) {
+    this._records = this._records.map((record) =>
+      record.id === id ? { ...record, ...data } : record,
+    );
   }
 
   deleteRecord(id: UserTableRecord["id"]) {

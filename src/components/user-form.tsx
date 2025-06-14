@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import { useUserTableStore } from "../providers/user-table-store-provider";
 import { useEffect, useState } from "react";
 import { useUserFormModalStore } from "../providers/user-form-modal-store-provider";
-import type { UserTableRecord } from "../stores/user-table-store";
+import type { UserTableRecord } from "../types/user-table";
 
 const UserForm = observer(() => {
   const userTableStore = useUserTableStore();
@@ -24,14 +24,17 @@ const UserForm = observer(() => {
       .catch(() => setSubmittable(false));
   }, [form, formValues]);
 
-  // field 타입에 맞게 초기값 계산
-  const initialValues = Object.fromEntries(
-    userTableStore.fields.map((field) => {
-      const key = field.name;
-      const value = field.type === "checkbox" ? false : "";
-      return [key, value];
-    }),
-  );
+  const initialValues =
+    userFormModalStore.mode.type === "edit" // 수정 버튼에 의해 모달이 열린 경우
+      ? userFormModalStore.mode.record // 전달 받은 값으로 폼 초깃값 설정
+      : Object.fromEntries(
+          // 그외의 경우, 필드의 타입에 따라 빈문자열 혹은 false 같은 값으로 초기값 설정
+          userTableStore.fields.map((field) => {
+            const key = field.name;
+            const value = field.type === "checkbox" ? false : "";
+            return [key, value];
+          }),
+        );
 
   return (
     <Form
@@ -48,8 +51,13 @@ const UserForm = observer(() => {
       layout="vertical"
       autoComplete="off"
       initialValues={initialValues}
-      onFinish={(value: Omit<UserTableRecord, "id">) => {
-        userTableStore.addRecord(value);
+      onFinish={(data: Omit<UserTableRecord, "id">) => {
+        // 현재 추가 모드인지 수정 모드인지에 따라 다른 처리
+        if (userFormModalStore.mode.type === "create") {
+          userTableStore.addRecord(data);
+        } else if (userFormModalStore.mode.type === "edit") {
+          userTableStore.editRecord(userFormModalStore.mode.record.id, data);
+        }
         userFormModalStore.closeModal();
       }}
     >

@@ -2,7 +2,7 @@ import { MoreOutlined } from "@ant-design/icons";
 import { Button, Dropdown, type MenuProps } from "antd";
 import { observer } from "mobx-react-lite";
 import { useUserFormModalStore } from "../providers/user-form-modal-store-provider";
-import type { UserTableRecord } from "../stores/user-table-store";
+import type { UserTableRecord } from "../types/user-table";
 import { useUserTableStore } from "../providers/user-table-store-provider";
 
 type Props = {
@@ -31,7 +31,7 @@ const UserTableRecordEditDropdown = observer(({ userTableRecord }: Props) => {
 
   const handleClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "edit") {
-      userFormModalStore.openModal();
+      userFormModalStore.openModalToEdit(userTableRecord);
     } else if (key === "delete") {
       userTableStore.deleteRecord(userTableRecord.id);
     }

@@ -7,7 +7,7 @@ const UserTableHeader = observer(() => {
   const userFormModalStore = useUserFormModalStore();
 
   const handleClickAddButton = () => {
-    userFormModalStore.openModal();
+    userFormModalStore.openModalToCreate();
   };
 
   return (

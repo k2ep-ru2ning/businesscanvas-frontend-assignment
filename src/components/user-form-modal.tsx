@@ -24,7 +24,7 @@ const UserFormModal = observer(() => {
         },
       }}
       title="회원 추가"
-      open={userFormModalStore.isOpen}
+      open={userFormModalStore.mode.type !== "closed"}
       onCancel={handleCancel}
       footer={null}
       destroyOnHidden // modal이 닫힐 때 UserForm 컴포넌트 unmount 하기 위함

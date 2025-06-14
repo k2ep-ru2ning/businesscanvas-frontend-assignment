@@ -2,7 +2,7 @@ import { Checkbox, Table, type TableColumnsType } from "antd";
 import UserTableFilterDropdown from "./user-table-filter-dropdown";
 import UserTableRecordEditDropdown from "./user-table-record-edit-dropdown";
 import { observer } from "mobx-react-lite";
-import type { UserTableRecord } from "../stores/user-table-store";
+import type { UserTableRecord } from "../types/user-table";
 import { useUserTableStore } from "../providers/user-table-store-provider";
 import type { ColumnType } from "antd/es/table";
 

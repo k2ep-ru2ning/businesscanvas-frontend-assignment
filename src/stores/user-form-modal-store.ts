@@ -1,22 +1,39 @@
 import { makeAutoObservable } from "mobx";
+import type { UserTableRecord } from "../types/user-table";
+
+type Mode =
+  | {
+      type: "create";
+    }
+  | {
+      type: "edit";
+      record: UserTableRecord;
+    }
+  | {
+      type: "closed";
+    };
 
 export default class UserFormModalStore {
-  private _isOpen: boolean;
+  private _mode: Mode;
 
   constructor() {
-    this._isOpen = false;
+    this._mode = { type: "closed" };
     makeAutoObservable(this);
   }
 
-  get isOpen() {
-    return this._isOpen;
+  get mode() {
+    return this._mode;
   }
 
-  openModal() {
-    this._isOpen = true;
+  openModalToCreate() {
+    this._mode = { type: "create" };
+  }
+
+  openModalToEdit(record: UserTableRecord) {
+    this._mode = { type: "edit", record };
   }
 
   closeModal() {
-    this._isOpen = false;
+    this._mode = { type: "closed" };
   }
 }
