@@ -1,7 +1,12 @@
 import UserTablePage from "./pages/user-table-page";
+import AntdConfigProvider from "./providers/antd-config-provider";
 
 const App = () => {
-  return <UserTablePage />;
+  return (
+    <AntdConfigProvider>
+      <UserTablePage />
+    </AntdConfigProvider>
+  );
 };
 
 export default App;
