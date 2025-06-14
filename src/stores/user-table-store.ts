@@ -99,7 +99,16 @@ export default class UserTableStore {
     return this._fields;
   }
 
+  // 1. 각 record에서 fieldName에 해당하는 값 추출
+  // 2. 중복 제거
+  // 3. 값의 타입이 string인데 trim해서 빈문자열이면 제거
   getFilterValuesOfField(fieldName: UserTableField["name"]) {
-    return [...new Set(this.records.map((record) => record[fieldName]))];
+    return [...new Set(this.records.map((record) => record[fieldName]))].filter(
+      (value) => typeof value === "boolean" || value.trim().length > 0,
+    );
+  }
+
+  addRecord(record: Omit<UserTableRecord, "id">) {
+    this._records.push({ id: nanoid(), ...record });
   }
 }

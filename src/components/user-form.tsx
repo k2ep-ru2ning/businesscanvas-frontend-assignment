@@ -3,13 +3,13 @@ import dayjs from "dayjs";
 import { observer } from "mobx-react-lite";
 import { useUserTableStore } from "../providers/user-table-store-provider";
 import { useEffect, useState } from "react";
+import { useUserFormModalStore } from "../providers/user-form-modal-store-provider";
+import type { UserTableRecord } from "../stores/user-table-store";
 
-type Props = {
-  onClickButton: () => void;
-};
-
-const UserForm = observer(({ onClickButton }: Props) => {
+const UserForm = observer(() => {
   const userTableStore = useUserTableStore();
+
+  const userFormModalStore = useUserFormModalStore();
 
   const [form] = Form.useForm();
 
@@ -48,9 +48,9 @@ const UserForm = observer(({ onClickButton }: Props) => {
       layout="vertical"
       autoComplete="off"
       initialValues={initialValues}
-      onFinish={(value) => {
-        console.log(value);
-        onClickButton();
+      onFinish={(value: Omit<UserTableRecord, "id">) => {
+        userTableStore.addRecord(value);
+        userFormModalStore.closeModal();
       }}
     >
       <div style={{ padding: "10px 24px 20px" }}>
@@ -173,7 +173,13 @@ const UserForm = observer(({ onClickButton }: Props) => {
         })}
       </div>
       <Flex justify="flex-end" gap={8} style={{ padding: "12px 16px" }}>
-        <Button onClick={onClickButton}>취소</Button>
+        <Button
+          onClick={() => {
+            userFormModalStore.closeModal();
+          }}
+        >
+          취소
+        </Button>
         <Button type="primary" htmlType="submit" disabled={!submittable}>
           추가
         </Button>

@@ -29,7 +29,7 @@ const UserFormModal = observer(() => {
       footer={null}
       destroyOnHidden // modal이 닫힐 때 UserForm 컴포넌트 unmount 하기 위함
     >
-      <UserForm onClickButton={handleCancel} />
+      <UserForm />
     </Modal>
   );
 });
