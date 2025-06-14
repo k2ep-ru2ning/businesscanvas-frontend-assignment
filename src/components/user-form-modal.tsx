@@ -6,10 +6,6 @@ import UserForm from "./user-form";
 const UserFormModal = observer(() => {
   const userFormModalStore = useUserFormModalStore();
 
-  const handleOk = () => {
-    userFormModalStore.closeModal();
-  };
-
   const handleCancel = () => {
     userFormModalStore.closeModal();
   };
@@ -29,12 +25,11 @@ const UserFormModal = observer(() => {
       }}
       title="회원 추가"
       open={userFormModalStore.isOpen}
-      onOk={handleOk}
       onCancel={handleCancel}
       footer={null}
       destroyOnHidden // modal이 닫힐 때 UserForm 컴포넌트 unmount 하기 위함
     >
-      <UserForm />
+      <UserForm onClickButton={handleCancel} />
     </Modal>
   );
 });

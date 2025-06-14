@@ -2,9 +2,27 @@ import { Button, Checkbox, DatePicker, Flex, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
 import { observer } from "mobx-react-lite";
 import { useUserTableStore } from "../providers/user-table-store-provider";
+import { useEffect, useState } from "react";
 
-const UserForm = observer(() => {
+type Props = {
+  onClickButton: () => void;
+};
+
+const UserForm = observer(({ onClickButton }: Props) => {
   const userTableStore = useUserTableStore();
+
+  const [form] = Form.useForm();
+
+  const [submittable, setSubmittable] = useState(false);
+
+  const formValues = Form.useWatch([], form);
+
+  useEffect(() => {
+    form
+      .validateFields({ validateOnly: true })
+      .then(() => setSubmittable(true))
+      .catch(() => setSubmittable(false));
+  }, [form, formValues]);
 
   // field 타입에 맞게 초기값 계산
   const initialValues = Object.fromEntries(
@@ -17,6 +35,7 @@ const UserForm = observer(() => {
 
   return (
     <Form
+      form={form}
       requiredMark={(label, { required }) => (
         <>
           {label}
@@ -31,6 +50,7 @@ const UserForm = observer(() => {
       initialValues={initialValues}
       onFinish={(value) => {
         console.log(value);
+        onClickButton();
       }}
     >
       <div style={{ padding: "10px 24px 20px" }}>
@@ -153,8 +173,8 @@ const UserForm = observer(() => {
         })}
       </div>
       <Flex justify="flex-end" gap={8} style={{ padding: "12px 16px" }}>
-        <Button>취소</Button>
-        <Button type="primary" htmlType="submit">
+        <Button onClick={onClickButton}>취소</Button>
+        <Button type="primary" htmlType="submit" disabled={!submittable}>
           추가
         </Button>
       </Flex>
